@@ -23,9 +23,18 @@ def extract_date_from_filename(filename: str) -> tuple:
         # Assume 20xx for year
         return month, day, 2000 + year
     
-    # Try MMDDYY format without dots (e.g., 042025)
-    no_dot_pattern = r'WE\s+(\d{2})(\d{2})(\d{2})'
-    match = re.search(no_dot_pattern, filename)
+    # Try MMDDYY format in common contexts
+    # This looks for 6 digits that might follow WE, Through, or other common keywords
+    contextual_pattern = r'(?:WE|Week\s+Ending|Through|Thru|As\s+Of|Data\s+Until|Date)?\s*(\d{2})(\d{2})(\d{2})'
+    match = re.search(contextual_pattern, filename, re.IGNORECASE)
+    if match:
+        month, day, year = map(int, match.groups())
+        return month, day, 2000 + year
+    
+    # Try standalone MMDDYY format (e.g., 032325)
+    # Look for 6 consecutive digits not part of a larger number
+    standalone_pattern = r'(?<!\d)(\d{2})(\d{2})(\d{2})(?!\d)'
+    match = re.search(standalone_pattern, filename)
     if match:
         month, day, year = map(int, match.groups())
         return month, day, 2000 + year

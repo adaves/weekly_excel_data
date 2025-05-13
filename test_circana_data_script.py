@@ -19,6 +19,12 @@ class TestCircanaDataScript(unittest.TestCase):
         expected = (4, 20, 2025)
         self.assertEqual(circana_data_script.extract_date_from_filename(filename), expected)
     
+    def test_extract_standalone_date(self):
+        """Test extracting standalone MMDDYY date format"""
+        filename = "MULOplus_Circana Weekly Dollar and Unit Consumption Trends_L1 and CYTD 032325.xlsx"
+        expected = (3, 23, 2025)
+        self.assertEqual(circana_data_script.extract_date_from_filename(filename), expected)
+    
     def test_extract_date_fallback(self):
         """Test fallback to previous Sunday when no date in filename"""
         filename = "MULOplus_Circana Weekly Dollar and Unit Consumption.xlsx"
